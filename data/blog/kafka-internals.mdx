@@ -1,0 +1,99 @@
+---
+title: Notes on how Kafka works
+date: '2023-06-01'
+tags: ['Backend', 'Kafka', 'streaming']
+draft: false
+images: ['/static/images/from-wp-to-nextjs.jpg', '/static/images/from-wp-to-nextjs.jpg']
+summary: 'Recently we faced an issue at work where after the release of one of our services, the CPU usage of our Kafka brokers went up. Investigating this lead me to learn more about Kafka.'
+---
+
+Recently we faced an issue at work where after the release of one of our services, the CPU usage of our Kafka brokers went up from around 60 to 80%.
+
+I started investigating why this was and after some time I figured out that it was related to a change made to our Golang Kafka producer client (sarama).
+
+I learned a lot about the internals of the Kafka producers and the Kafka producer-broker-consumer system as a whole during this debugging process, so I'm now writing up this context that I've built up. Hopefully, it'll be useful to others or myself later.
+
+I am going to write this up in an FAQ style because that's how I usually write design docs and I find it a useful way to summarise actionable insights about a topic.
+
+### How does the producer client work at a high level?
+
+The producer client takes the messages intended for a topic and stores them in a broker-specific object under a map keyed by (topic, partition). So, assume you have a system with 9 Kafka brokers and a 60-partition topic. Then, when you send a message, the producer client will decide which broker this should go to based on which partition this message belongs to. You can specify what partitioning strategy you want to use, but for simplicity's sake assume that you use a random partitioning strategy which means that your message will be assigned to any one of the 60 partitions randomly. Then, this message will be stored in the object of the broker that is the leader of that partition, inside a map entry keyed by (your_topic, the_random_partition).
+
+Now, the Kafka producer is highly configurable, but generally either of two things will happen. Either your message is just going to sit there waiting for enough of a batch of messages to build up / enough time to pass before its sent to the broker; OR the producer might decide to send it right away to the broker.
+This is highly configurable and here you can generally make a trade off between load on the brokers (CPU/disk) and better compression.
+
+Coming back to the start of this story, the reason for our increased CPU usage was that our Kafka producer included a change to allow to send up to 10 in-flight requests to the Kafka brokers (instead of only 1 before). Furthermore, our configuration was so that we didn't do any batching and preferred to send data to the broker as soon as we could. This meant that while previously messages to a broker were batched during the RTT between our producer and the broker, now we could have 10 requests in flight and so we had only RTT/10 time to batch. This both hurt our compression ratio and put more request-load on our Kafka brokers.
+
+### How do I decide on the right partition count?
+
+Generally, you want the partition count to be a multiple of the broker count to make the load even on the brokers. Furthermore, you want it to be a nicely divisible number (eg. a multiple of 12). This is both so that you can scale the number of brokers your cluster has without necessarily having to change the partition count, and also because your consumer group size (ie. the number of consumer threads in any of your consumer groups) should be a divisor of the partition count if you want your consumer threads to be balanced.
+
+### How do you choose the right broker number and size?
+
+We run our Kafka cluster on AWS MSK and they have nice docs on how to properly size your Kafka cluster. With MSK it's important to note that you can't decrease the number of brokers you have, only increase it, so you want to be conscious of this as you scale the cluster.
+Ref: https://docs.aws.amazon.com/msk/latest/developerguide/bestpractices.html
+
+### What are the key consistency/availability trade-offs with Kafka?
+
+Generally, the consistency-availability trade-off is controlled by the ACKs property of the producer. You can either wait for no response from the brokers, the leader's response, or a configurable number of brokers' response (which is configurable per-topic by the in-sync replicas parameter). The more ACKs you ask for, the better consistency guarantee you get, but you increase latency and decrease availability.
+Furthermore, you can control durability by configuring the replication factor of each topic. Eg. with a replication factor of 3 you can lose 2 nodes of the cluster and still retain all committed data.
+
+### What is Mirror Maker (2)?
+
+Mirror Maker allows you to forward data from topic A in cluster 1 to topic B in cluster 2. It is useful for migrating between topics, migrating between Kafka clusters or for different cross-datacenter cluster setups.
+
+For example, you can use Mirror Make for a disaster recovery system.
+
+Assume you have a system where you are producing event from a worker pool in datacenter A and you are normally producing these events to a Kafka cluster (and consumers) in datacenter B.
+
+Now, if the network connection between A and B goes down, you might want a disaster recovery setup that offloads messages from the workers to a backup Kafka cluster in the same datacenter (A) and forward these messages to datacenter B when the network comes back up. You can configure Mirror Maker to do this forwarding easily.
+
+There are some more advanced things with Mirror Maker, eg. it can also sync the consumer offsets of your consumer groups across Kafka clusters, but that's harder to get right so you should read up on that more from official sources before you do that.
+
+### How should you monitor your Kafka cluster?
+
+I'm going to assume a managed cluster like MSK that we use.
+In general, you should monitor what you care about. Most likely you want to monitor your producer and consumer latencies which are either metrics emitted by your kafka clients or are application-level metrics.
+Then, for the cluster, you want to monitor the basic system metrics (CPU, disk, memory, network) and also Kafka-specific metric like:
+
+- number of under-replicated partitions (telling you about partitions that lost a leader/follower)
+- request handle idle % (how many request handles do you have left)
+- TBD what else...
+
+### How does Kafka compress messages?
+
+Earlier I wrote about batching in the producer. Normally compression is done inside the producer, essentially the whole batch (per-topic-partition) is compressed with a configurable compression algorithm at a configurable compression level. So the more partitions you have, the worse compression ratio you should expect, and furthermore, the more batching you do the better compression ratio you should expect.
+This is also configurable, but by default, Kafka will store the messages at the broker in this producer-compressed format and won't uncompress them.
+
+### How is batching configured in the producer?
+
+Kafka provides multiple different configs for tuning your batching:
+
+1. linger.ms or batch frequency: you can use this to tell Kafka to send a batch when the earliest message has been in the batch for at least X ms. With this, you can introduce batching while bounding the latency that you introduce during your batching.
+2. batch.size: the overall size of your batch in bytes (or in some clients it is also configurable in terms of the number of messages)
+3. number of in-flight requests: the number of open connections you can have to a single broker. If you already have X connections to a broker, your producer client is forced to batch messages until it receives at least one response from the broker, so this indirectly affects batching.
+
+It is important to note that requests to a broker are sent at once for all topic-partitions. So assuming both partition P1 and P2 are lead by broker B1, then when the batching configuration for P1 is achieved (eg. 1000 messages are ready to be sent), then both P1 and P2 will be sent to B1 as part of the next request, event though P2 might have more messages before its 1000 message limit.
+
+### What are the scaling limits of a singe Kafka broker?
+
+MSK provides guidance on the maximum number of partitions per broker (depending on broker types) which for us is the scaling bottleneck of our cluster.
+Ref: https://docs.aws.amazon.com/msk/latest/developerguide/bestpractices.html
+
+### How do you choose the right retention for your topic?
+
+Choose it so that:
+
+1. You can afford the disk usage.
+2. You have enough time to either have your consumers consume the data in that time, or have sufficient alerting to be able to adjust the retention policy should your consumers fall behind.
+
+### What are some Kafka tools worth knowing about?
+
+1. Cruise Control: There are a couple of similar tools available, but basically what it does is (a) it provides a nice UI to monitor your Kafka cluster and (b) it gives you an automated tool to continuously rebalance the topics in your cluster across your brokers as the load changes on them. It's worth trying this out if your brokers are unbalanced.
+2. Conductor: TBD, I haven't tried this but it seems to be similar to Cruise Control
+3. RedPanda console: TBD, again similar to Cruise Control with perhaps a better UI. It's provided by the RedPanda team who claim to have build a faster (lower P99 latency, higher throughput) Kafka-compatible drop-in replacement called RedPanda.
+4. UReplicator / MirrorMaker 2: for mirroring topics across clusters.
+
+### Summary
+
+Kafka is a highly-configurable, complex system that is very powerful if you can use it correctly. If you know how it works internally, you can get the most out of it in terms of cost-performance and reliability.

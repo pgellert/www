@@ -1,15 +1,15 @@
 ---
-name: Raphaël Chelly
+name: Gellért Peresztegi-Nagy
 avatar: /static/images/avatar.jpg
-occupation: Marketing Project Manager
-company: Octopia
-email: hi@raphaelchelly.com
-twitter: https://twitter.com/raphael_chelly
-linkedin: https://www.linkedin.com/raphael.chelly
-github: https://github.com/raphaelchelly
+occupation: Software Engineer
+company: Quantcast
+email: pereszteginagy.gellert (at) gmail.com
+twitter: https://twitter.com/gellertpn
+linkedin: https://www.linkedin.com/in/gellert-peresztegi
+github: https://github.com/pgellert
 ---
 
-Graduated from a **Master in Management** at Excelia Business School, I am passionate about **digital and new technologies.** Creative, proactive, versatile and with a good understanding of digital and marketing, **I am confident in my ability to tackle new missions.** Organized and rigorous, I possess a range of key business and interpersonal skills that I have developed through my professional experiences.
+Graduated from a **BA in Computer Science** at the University of Cambridge, I am passionate about **software engineering and business.** I'm results-oriented, curious and a quick learner with a good understanding of computer science and systems fundamentals, **I am confident in my ability to solve software engineering problems.** Organized and rigorous, I possess a range of key business and interpersonal skills that I have developed through my professional experiences.
 
 - [💼 Experience](#experience)
 - [🧑🏻‍💻 Side Project](#side-project)
@@ -19,98 +19,63 @@ Graduated from a **Master in Management** at Excelia Business School, I am passi
 
 ## Experience
 
-### Marketing Project Manager @**[Octopia](https://octopia.com)**
+### Software Engineer @**[Quantcast](https://quantcast.com/)**
 
-`Oct 2021 - Today`
+`Aug 2021 - Today`
 
-Responsible for **the acquisition and marketing development of the Octopia Products offer** in order to develop the activity and e-commerce sales in France and internationally.
+Responsible for **mainting a high-throughput (~5M transactions / s) real time bidding system** in order to improve its reliability, its cost-performance and the business functionality it provides.
 
-### Marketing Project Manager @[Microsoft](https://microsoft.net)
+Redesigned our **spend feedback system** in a way that **reduced spend latency from ~1 minute to ~400ms at P50**, **reduced** discrepancies across our internal systems and the related **maintenance headache**, and provided a flexible design on which **others could build new features on** such as a subsequent project providing **2M/year value** to the business.
 
-`Sept 2019 - Sept 2020`
+Lead **multi-team multi-quarter projects** while keeping **stakeholders engaged** during the process.
 
-Participation in the implementation of Microsoft France’s marketing plan for the Education audience (Primary/Secondary and Higher Education) in order to **develop the network of teachers and partner schools.**
+Provided **feedback on code reviews and design docs** to unblock others and iterate towards better designs and a cleaner, more reliable codebase faster.
 
-### Digital Project Manager @[Havana Club International](https://havana-club.com)
+### Software Engineer Intern @[G-Research](https://www.gresearch.com/)
 
-`Jan 2019 - Jul 2019`
+`Jun 2020 - Aug 2020`
 
-As part of the International Marketing team and under the responsibility of the Senior Brand Manager, I participate in the launch and follow-up of **international digital projects** for Havana Club International, a subsidiary of Pernod Ricard group.
-
-### Digital Project Manager @[Pernod Ricard France](https://www.pernod-ricard.com/fr/nos-marches/france)
-
-`Jul 2018 - Jan 2019`
-
-Support to the Digital Manager on the deployment of the **digital strategy of the Havana Club brand on the French market.**
+Create a notebook to validate new releases of a service by processing and visualising business and system metrics.
 
 ## Side Project
 
-### Cofounder & Project Manager @[Fabrilab](https://fabrilab.net)
+Not much, I focus on my main job and try to dig deeper into focus areas on the side.
 
-`Sept 2017 - Today`
+### Marketing Website @[Perident](https://www.fogaszatgyor.hu/)
 
-Creation of a communication agency in the form of a micro-enterprise. Fabrilab supports self-employed and small businesses in their **digital transition.**
+`Jun 2021 - Today`
 
-- Main clients : TotalEnergies, Solis International, SCEBOG (1st agricultural cooperative of Guyana)...
+I built a marketing website for my Dad's dental practice in Next.js/React optimized for SEO and got it to the first page of Google. 10x-ed the number of visitors to his website coming from organic search compared to the previous old website.
 
 ## Education
 
-### Master in Management @[Excelia BS](https://www.excelia-group.com)
+### BA in Computer Science @[University of Cambridge](https://www.cam.ac.uk/)
 
-`Sept 2016 - Sept 2020`
+`Sept 2018 - Jul 2021`
 
-Member of the «Conférence des Grandes Ecoles», AMBA, AACSB, EQUIS and EPAS accredited. Graduate of a master in management, specialising in Marketing & Brand Management.
+Graduated in the top 10% of my year with a 1st degree. Some of my faviourite courses include Concurrent and Distributed Systems, Multicore Systems (advanced concurrency course), Computer Architecture, Computer Networking. Implemented the Raft consensus protocol in Rust as the core of a financial exchange for my dissertation project.
 
 ## Skills
 
-### Hard Skills:
+### Languages (in order of strength):
 
-- 🇬🇧 English
-- 🇪🇸 Spanish
-- 🤹🏼‍♂️ Project Management
-- 🌐 WordPress
-- 💻 Digital Marketing
-- 🎨 Adobe CC
-- 🔍 SEO
-- 📊 Microsoft 365
-- 📨 E-CRM Management
-- 📱 Social Media Management
+- Java
+- Golang
+- Python
+- various DSLs (Terraform, Gradle, Dockerfile, Jenkins, etc.)
+- C++
 
 ### Soft Skills:
 
-- 🎨 Creative
-- 📚 Curious
-- 🤝🏼 Team Spirit
+- Curious
+- Fast learner
+- Team Spirit
+- Project Management
+- Clear Communication
 
 ## Interests
 
 ### Sports:
 
-- 🏄🏽‍♂️ Bodyboarding & Surfing
-- 🏊🏼‍♂️ Swimming
-
-|                                                       |                                         |
-| ----------------------------------------------------- | --------------------------------------- |
-| ![Bodyboarding](/static/images/bodyboarding-raph.jpg) | ![Wave](/static/images/wave-france.jpg) |
-
-### Others:
-
-- 🗺️ Discovery and Traveling
-- 📷 Photography
-- 🎶 Music
-- ♟️ Chess ➡️ [Chess.com](https://www.chess.com/member/raphythe)
-
-### Humanitarian:
-
-- 🤝🏼 Volunteer teacher in Cambodia in 2017 for 3 months in a children’s centre **"Les Enfants de Klang Leu".** As a teacher, I taught French, English and IT. Practice hygiene rules and help with the daily life of the center.
-
-### Other Experiences:
-
-- **2021:** TikTok Business for Enterprise training
-- **2020:** Facebook Spark AR Tutorials
-- **2018:** Bike courier for Deliveroo and Uber Eats
-- **2018:** Ambassador [ASUS](https://www.asus.com/fr/) Vivobook S and ASUS ZenFone 5
-- **2017-2018:** Digital Project Manager of the Student Office of Excela Business School
-- **2017:** Hotel receptionist in Australia at the [Nomads Noosa Hotel](https://nomadsworld.com/australia/nomads-noosa/)
-- **2016-2017:** Bank teller at [La Poste Group](https://www.lapostegroupe.com/fr) (replacement during the holidays)
-- **2015:** Online advisor at [CIC](https://www.cic.fr/fr/index.html) (6-month fixed-term contract)
+- [Water polo](https://en.wikipedia.org/wiki/Water_polo) (since I was 10)
+- Tennis (I used to play for 6 years but now I'm just playing for fun)

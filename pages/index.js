@@ -29,7 +29,7 @@ export default function Home({ posts }) {
               Gellért Peresztegi-Nagy
             </h1>
             <h2 className="mb-1 text-xl font-bold tracking-tight text-zinc-600 dark:text-white md:text-2xl">
-              Portfolio of a coder.
+              Software Enginner
             </h2>
           </div>
           <div className="relative mb-8 mr-auto w-[100px] sm:mb-0 sm:w-[200px]">
@@ -44,62 +44,43 @@ export default function Home({ posts }) {
         </div>
         <p className="space-y-4 text-zinc-500 dark:text-slate-300">
           <p className="my-4 leading-loose">
-            Graduated from a Master in Management at{' '}
+            Graduated from a BA in Computer Science at the{' '}
             <a
               className="focusable rounded-sm font-medium text-zinc-800 underline decoration-blue-500 decoration-2 underline-offset-2 transition duration-100 hover:text-blue-500 hover:decoration-sky-500/30 focus:text-blue-500 focus:ring-sky-500/40 dark:text-white dark:decoration-sky-400 dark:hover:text-sky-400 dark:hover:decoration-sky-400/30 dark:focus:text-sky-400 dark:focus:ring-sky-400/40"
-              href="https://www.excelia-group.com/"
+              href="https://www.cam.ac.uk/"
               rel="noreferrer"
               target="_blank"
             >
-              Excelia Business School
+              University of Cambridge
             </a>
-            , I am passionate about digital, new technologies and Web3 projects. During my
-            professional experiences, I was able to discover many sectors of activity : Wines and
-            Spirits at{' '}
+            . I have been able to learn from many smart people at{' '}
             <a
               className="focusable rounded-sm font-medium text-zinc-800 underline decoration-blue-800 decoration-2 underline-offset-2 transition duration-100 hover:text-blue-800 hover:decoration-blue-800/30 focus:text-blue-500 focus:ring-blue-500/40 dark:text-white dark:decoration-sky-400 dark:hover:text-sky-400 dark:hover:decoration-sky-400/30 dark:focus:text-sky-400 dark:focus:ring-sky-400/40"
-              href="https://www.pernod-ricard.com/"
+              href="https://quantcast.com/"
               rel="noreferrer"
               target="_blank"
             >
-              Pernod Ricard
+              Quantcast
             </a>{' '}
-            as a Digital Project Manager & New Technologies at{' '}
+            where I worked as part of the Edge Services team maintaining a real time bidding system
+            processing 5M transactions per second. Previously I did an internship at{` `}
             <a
               className="focusable rounded-sm font-medium text-zinc-800 underline decoration-green-500 decoration-2 underline-offset-2 transition duration-100 hover:text-green-500 hover:decoration-green-500/30 focus:text-lime-500 focus:ring-lime-500/40 dark:text-white dark:decoration-lime-400 dark:hover:text-lime-400 dark:hover:decoration-lime-400/30 dark:focus:text-lime-400 dark:focus:ring-lime-400/40"
-              href="https://www.microsoft.com/"
+              href="https://www.gresearch.com/"
               rel="noreferrer"
               target="_blank"
             >
-              Microsoft
+              G-Research
             </a>{' '}
-            as a Marketing Project Manager. Today I work in Bordeaux as a Marketing Project Manager
-            at{' '}
-            <a
-              className="focusable rounded-sm font-medium text-zinc-800 underline decoration-sky-700 decoration-2 underline-offset-2 transition duration-100 hover:text-sky-700 hover:decoration-sky-500/30 focus:text-orange-500 focus:ring-sky-500/40 dark:text-white dark:decoration-blue-400 dark:hover:text-blue-400 dark:hover:decoration-blue-400/30 dark:focus:text-blue-400 dark:focus:ring-blue-400/40"
-              href="https://www.octopia.com/"
-              rel="noreferrer"
-              target="_blank"
-            >
-              Octopia
-            </a>
-            . Besides that, I cofounded the communication agency{' '}
-            <a
-              className="focusable rounded-sm font-medium text-zinc-800 underline decoration-violet-500 decoration-2 underline-offset-2 transition duration-100 hover:text-violet-500 hover:decoration-violet-500/30 focus:text-violet-500 focus:ring-violet-500/40 dark:text-white dark:decoration-violet-400 dark:hover:text-violet-400 dark:hover:decoration-violet-400/30 dark:focus:text-violet-400 dark:focus:ring-violet-400/40"
-              href="https://www.fabrilab.net/"
-              rel="noreferrer"
-              target="_blank"
-            >
-              Fabrilab
-            </a>
-            , that I'm still working on. Versatile & curious in digital marketing, I am confident in
-            several aspects such as Social Media, SEO, E-CRM & Content creation.{' '}
+            working in their Simulations and Exchanges team. I consider myself a results-oriented
+            software engineer who has strong computer science fundamentals and who is most curious
+            about challenging systems problems.
           </p>
         </p>
         <div className="mt-8 flex flex-wrap gap-4 text-center">
           <a
             className="focusable flex flex-none cursor-pointer items-center justify-center gap-2 rounded-md bg-blue-500 py-2 px-2.5 font-medium text-white shadow-lg shadow-blue-500/10 transition selection:bg-white/30 hover:bg-blue-500/80 hover:shadow-blue-500/5 focus:ring-blue-500/40 dark:bg-blue-400 dark:text-zinc-900 dark:shadow-blue-400/10 dark:selection:bg-zinc-900/30 dark:hover:bg-blue-400/80 dark:hover:shadow-blue-400/5 dark:focus:ring-blue-400/40 sm:w-auto sm:px-3 sm:pl-2.5"
-            href="https://www.linkedin.com/in/raphaelchelly"
+            href="https://www.linkedin.com/in/gellert-peresztegi"
             rel="noreferrer"
             target="_blank"
           >
@@ -115,7 +96,7 @@ export default function Home({ posts }) {
           </a>
           <a
             className="focusable flex flex-none cursor-pointer items-center justify-center gap-2 rounded-md bg-indigo-500 py-2 px-2.5 font-medium text-white shadow-lg shadow-indigo-500/10 transition selection:bg-white/30 hover:bg-indigo-500/80 hover:shadow-indigo-500/5 focus:ring-indigo-500/40 dark:bg-indigo-400 dark:text-zinc-900 dark:shadow-indigo-400/10 dark:selection:bg-zinc-900/30 dark:hover:bg-indigo-400/80 dark:hover:shadow-indigo-400/5 dark:focus:ring-indigo-400/40 sm:w-auto sm:px-3 sm:pl-2.5"
-            href="https://github.com/raphaelchelly"
+            href="https://github.com/pgellert"
             rel="noreferrer"
             target="_blank"
           >
@@ -131,7 +112,7 @@ export default function Home({ posts }) {
           </a>
           <a
             className="focusable flex flex-none cursor-pointer items-center justify-center gap-2 rounded-md bg-lime-500 py-2 px-2.5 font-medium text-white shadow-lg shadow-lime-500/10 transition selection:bg-white/30 hover:bg-lime-500/80 hover:shadow-lime-500/5 focus:ring-lime-500/40 dark:bg-lime-400 dark:text-zinc-900 dark:shadow-lime-400/10 dark:selection:bg-zinc-900/30 dark:hover:bg-lime-400/80 dark:hover:shadow-lime-400/5 dark:focus:ring-lime-400/40 sm:w-auto sm:px-3 sm:pl-2.5"
-            href="mailto:hi@raphaelchelly.com"
+            href="mailto:pereszteginagy.gellert@gmail.com"
           >
             <svg height="24" role="presentation" width="24" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -145,7 +126,7 @@ export default function Home({ posts }) {
           </a>
           <a
             className="focusable flex flex-none cursor-pointer items-center justify-center gap-2 rounded-md bg-blue-500 py-2 px-2.5 font-medium text-white shadow-lg shadow-blue-500/10 transition selection:bg-white/30 hover:bg-blue-500/80 hover:shadow-blue-500/5 focus:ring-blue-500/40 dark:bg-blue-400 dark:text-zinc-900 dark:shadow-blue-400/10 dark:selection:bg-zinc-900/30 dark:hover:bg-blue-400/80 dark:hover:shadow-blue-400/5 dark:focus:ring-blue-400/40 sm:w-auto sm:px-3 sm:pl-2.5"
-            href="https://twitter.com/raphael_chelly"
+            href="https://twitter.com/gellertpn"
             rel="noreferrer"
             target="_blank"
           >
@@ -164,7 +145,8 @@ export default function Home({ posts }) {
           <div className="mt-2 justify-center"></div>
         </div>
       </div>
-      <div className="content mb-8">
+
+      {/* <div className="content mb-8">
         <h2 className="mb-2 text-xl font-bold text-zinc-800 dark:text-white">Projects</h2>
         <p className="max-w-[46ch] leading-relaxed text-zinc-500 dark:text-slate-300">
           A selection of projects I worked on in the past few years.
@@ -182,7 +164,8 @@ export default function Home({ posts }) {
             />
           ))}
         </div>
-      </div>
+      </div> */}
+
       <div className="content mt-12 sm:mt-24">
         <h2 className="mb-2 text-xl font-bold text-zinc-800 dark:text-white">Experiences</h2>
         <ul className="mt-8">
@@ -194,7 +177,7 @@ export default function Home({ posts }) {
               target="_blank"
             >
               <Image
-                src="/static/images/workxp/octopia.jpg"
+                src="/static/images/quantcast_logo.png"
                 alt="Octopia"
                 width="50px"
                 height="50px"
@@ -204,7 +187,7 @@ export default function Home({ posts }) {
             <div className="flex min-w-0 flex-col justify-center">
               <p className="mb-1 flex items-center">
                 <span className="truncate font-semibold text-zinc-700 dark:text-zinc-100">
-                  Octopia
+                  Quantcast
                 </span>
                 <span className="ml-1.5 inline-block flex-none translate-y-px rounded bg-zinc-100 p-1 text-xs font-medium leading-none text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
                   2021
@@ -214,7 +197,7 @@ export default function Home({ posts }) {
               </p>
               <p className="flex items-center truncate">
                 <span className="flex-1 truncate text-zinc-500 dark:text-zinc-400">
-                  Marketing Project Manager
+                  Software Engineer
                 </span>
               </p>
             </div>
@@ -227,7 +210,7 @@ export default function Home({ posts }) {
               target="_blank"
             >
               <Image
-                src="/static/images/workxp/fabrilab2.jpg"
+                src="/static/images/gresearch_logo.jpg"
                 alt="Octopia"
                 width="50px"
                 height="50px"
@@ -237,83 +220,15 @@ export default function Home({ posts }) {
             <div className="flex min-w-0 flex-col justify-center">
               <p className="mb-1 flex items-center">
                 <span className="truncate font-semibold text-zinc-700 dark:text-zinc-100">
-                  Fabrilab
+                  G-Research
                 </span>
                 <span className="ml-1.5 inline-block flex-none translate-y-px rounded bg-zinc-100 p-1 text-xs font-medium leading-none text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
-                  2017
-                  <span className="text-zinc-350 dark:text-zinc-550 mx-0.5">—</span>
-                  Today
-                </span>
-              </p>
-              <p className="flex items-center truncate">
-                <span className="flex-1 truncate text-zinc-500 dark:text-zinc-400">
-                  Co-founder & Project Manager
-                </span>
-              </p>
-            </div>
-          </li>
-          <li className="dark:text-zinc-350 my-5 flex items-center gap-4 text-zinc-500">
-            <a
-              className="link focusable font-medium text-zinc-800 dark:text-white"
-              href="https://www.microsoft.com/"
-              rel="noreferrer"
-              target="_blank"
-            >
-              <Image
-                src="/static/images/workxp/microsoft.jpg"
-                alt="Octopia"
-                width="50px"
-                height="50px"
-                className="rounded-md"
-              />
-            </a>
-            <div className="flex min-w-0 flex-col justify-center">
-              <p className="mb-1 flex items-center">
-                <span className="truncate font-semibold text-zinc-700 dark:text-zinc-100">
-                  Microsoft
-                </span>
-                <span className="ml-1.5 inline-block flex-none translate-y-px rounded bg-zinc-100 p-1 text-xs font-medium leading-none text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
-                  2019
-                  <span className="text-zinc-350 dark:text-zinc-550 mx-0.5">—</span>
                   2020
                 </span>
               </p>
               <p className="flex items-center truncate">
                 <span className="flex-1 truncate text-zinc-500 dark:text-zinc-400">
-                  Marketing Project Manager Intern
-                </span>
-              </p>
-            </div>
-          </li>
-          <li className="dark:text-zinc-350 my-5 flex items-center gap-4 text-zinc-500">
-            <a
-              className="link focusable font-medium text-zinc-800 dark:text-white"
-              href="https://www.pernod-ricard.com/"
-              rel="noreferrer"
-              target="_blank"
-            >
-              <Image
-                src="/static/images/workxp/pernod-ricard.jpg"
-                alt="Octopia"
-                width="50px"
-                height="50px"
-                className="rounded-md"
-              />
-            </a>
-            <div className="flex min-w-0 flex-col justify-center">
-              <p className="mb-1 flex items-center">
-                <span className="truncate font-semibold text-zinc-700 dark:text-zinc-100">
-                  Pernod Ricard
-                </span>
-                <span className="ml-1.5 inline-block flex-none translate-y-px rounded bg-zinc-100 p-1 text-xs font-medium leading-none text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
-                  2018
-                  <span className="text-zinc-350 dark:text-zinc-550 mx-0.5">—</span>
-                  2019
-                </span>
-              </p>
-              <p className="flex items-center truncate">
-                <span className="flex-1 truncate text-zinc-500 dark:text-zinc-400">
-                  Digital Project Manager Intern
+                  Software Engineer Intern
                 </span>
               </p>
             </div>

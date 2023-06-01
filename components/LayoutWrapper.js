@@ -1,11 +1,11 @@
-import siteMetadata from '@/data/siteMetadata'
-import headerNavLinks from '@/data/headerNavLinks'
-import Logo from '@/data/logo.svg'
-import Link from './Link'
-import SectionContainer from './SectionContainer'
-import Footer from './Footer'
-import MobileNav from './MobileNav'
-import ThemeSwitch from './ThemeSwitch'
+import siteMetadata from '@/data/siteMetadata';
+import headerNavLinks from '@/data/headerNavLinks';
+import Link from './Link';
+import SectionContainer from './SectionContainer';
+import Footer from './Footer';
+import MobileNav from './MobileNav';
+import ThemeSwitch from './ThemeSwitch';
+import Image from 'next/image';
 
 const LayoutWrapper = ({ children }) => {
   return (
@@ -16,7 +16,13 @@ const LayoutWrapper = ({ children }) => {
             <Link href="/">
               <div className="flex items-center justify-between">
                 <div className="mr-3">
-                  <Logo />
+                  <Image
+                    src="/static/images/g-logo.png"
+                    alt="logo"
+                    width="60px"
+                    height="60px"
+                    className="rounded-full"
+                  />
                 </div>
               </div>
             </Link>
@@ -41,7 +47,7 @@ const LayoutWrapper = ({ children }) => {
         <Footer />
       </div>
     </SectionContainer>
-  )
-}
+  );
+};
 
-export default LayoutWrapper
+export default LayoutWrapper;

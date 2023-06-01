@@ -1,0 +1,56 @@
+---
+title: Notes on connection spikes and the Linux networking stack
+date: '2023-04-23'
+tags: ['Backend', 'TCP', 'Linux']
+draft: false
+images: ['/static/images/from-wp-to-nextjs.jpg', '/static/images/from-wp-to-nextjs.jpg']
+summary: 'I was debugging an issue that got me to dig a bit deeper into how the Linux networking stack works, and what options we have to protect servers during connection spikes.'
+---
+
+I'm working as a Platform Engineer at Quantcast, and this week at work I was debugging an issue that got me to dig a bit deeper into how the Linux networking stack works, and specifically into what different options we have to protect servers during connection spikes. I'm writing this post to try to save some of the context that I built up this week.
+
+So the problem that we had at work was that every day at around 4am in the morning, we started getting a spike of connections in our European datacenter that was causing instability in our systems. There were a couple of things going wrong there, but it got me thinking what would be the ideal way to prevent the site from falling over in a case like this.
+
+This is essentially a DoS scenario where the "attackers" are friendly (partner exchanges), but still it is hard to influence how they act and it is our responsibility to stay up and recover from this scenario.
+
+Ignoring the fact that we should fix the root cause of why this spike occurs, we can do a couple of things to mitigate in the cases when we receive connection spikes.
+
+Since we have a layer-4 load balancing layer in front of our HTTP(S) servers, I believe we have we have these main ways of controlling the load in the system until the system catches up:
+
+1. Limiting the rate of accepted connections in the load balancer (at the kernel level or at the application level)
+2. Limiting the rate of accepted connections sent to the upstream servers from the load balancer
+3. Limiting the rate of accepted connections in the servers (at the kernel level or at the application level)
+
+I was learning a bit about how the TCP/IP stack works in Linux and came across this article about the [TCP state machine](http://tcpipguide.com/free/t_TCPOperationalOverviewandtheTCPFiniteStateMachineF-2.htm#:~:text=The%20Simplified%20TCP%20Finite%20State%20Machine&text=Each%20connection%20between%20one%20TCP,until%20a%20connection%20is%20established.).
+
+It got me thinking about whether we should be limiting:
+
+- The number of connections open with conntrack
+- Or use some NGINX config like `max_conns` or `limit_conn` to define some controls based on either the upstreams and their capacity (`max_conns`) or based on expected usage rate of clients (`limit_conn`)
+
+The difficult problem with all of these options is making sure that there are no side effects of the limits that we put in place, or rather that all side effects are reasonable and acceptable. For example, if we limit at the conntrack table, we could have problems if our upstream servers have a bug and fail to close connections, since then we could fill up the conntrack table of our load balancer and then start to reject incoming connections out of nowhere. And it would be a hard bug to debug.
+
+Furthermore, it is hard to come up with limits for these options. You can look at the past trends of the values, but you never know when those trends will change if they are not directly controlled by you. For example, you could set up `limit_conn` to limit each client IP:PORT to up to new 100 connections/s based on the fact that you saw that the current largest IP:PORT pair does 50/s. However, that IP:PORT could be Google's exchange behing a proxy and the next time they increase their server count to 3x you might start cutting a third of their traffic out without really noticing anything on your side other than some connection throttling.
+
+So it's a hard problem.
+
+Right now I think `max_conns` is our best option because at least with `max_conns` we can:
+a. Make an educated guess about the limit of the capabilities of our servers
+b. We know when the capabilities of our servers changes, we control that
+
+And I also think that this is a better option than limiting from the server-side (ie. from the HTTP servers), because that way we would either:
+
+1. have to limit at the kernel-level (which we've already established is imperfect), or
+2. have to implement some concurrent logic that toggles accepting connections on/off based on the acceptance rate (sounds much harder than setting a `max_conns` limit in NIGNX)
+3. have to accept connections and close them if we want to throttle - we actually already have connection throttling in place, so this wouldn't be that bad, but it is expensive to accept connections when you are getting hammered with new connections
+
+So that's about it for this post, I just wanted to write up my thoughts on this issue so that I remember some this context the next time this happens.
+
+### Some related links:
+
+- NGINX client connection limiting: https://docs.nginx.com/nginx/admin-guide/security-controls/controlling-access-proxied-http/
+  - Summary: you define a ``limit_conn`\_zone` that defines what "key" you are going to throttle based on (eg. the client IP), then you define which server blocks you want to apply throttling for and at what rate.
+
+### TODO:
+
+- I'd like to dig a bit deeper into analysing what tools and what system metrics are available to diagnose which part of the system is getting overloaded during these connection spikes. I'm guessing it is the SSL connection accepting code, although I am not fully convinced.
