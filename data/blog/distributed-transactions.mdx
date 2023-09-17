@@ -1,0 +1,83 @@
+---
+title: Distributed transactions
+date: '2023-09-17'
+tags: ['Distributed Systems', 'Concurrency', 'Backend']
+draft: false
+images: ['/static/images/from-wp-to-nextjs.jpg', '/static/images/from-wp-to-nextjs.jpg']
+summary: 'I was learning about distributed transactions, when they are applicable, how they are typically implemented and what guarnatees they provide. Here are my notes.'
+---
+
+## When do you need distributed transactions?
+
+Imagine you are implementing a small ticket booking website. You want to take payment for the ticket, and at the same time, you want to allocate this ticket to the purchaser. Ideally, you want these two operations to happen simultaneously as a transaction. Either both should succeed, or both should fail, since otherwise you might charge the client without being able to give them a ticket, or you provide a ticket without being able to charge them for it. Neither is great.
+
+What we need here is a distributed transaction across the ticket allocation system and the payment system, which can help us guarantee that these two steps happen as a single transaction.
+
+Apart from this simple example, there are many reasons why you might need a distributed transaction, such as:
+
+- When you need to perform transactions across multiple domains - whether that is because you are following a microservices architecture that separates the business domain into multiple service-specific domains, or perhaps because you are using an external payment provider and you need to perform a transaction across business boundaries
+- Or when you are implementing a sharded database for performance reasons and you want to maintain ACID transactions
+
+Now that we know why we might need a distributed transaction, let's see some common ways to implement them.
+
+### Common approaches
+
+There are various approaches to distributed transactions, from low-level protocols designed to solve the problem inside a distributed database to domain-design techniques that avoid the transaction or incorporate the transactional steps into the domain model.
+
+#### Two-phase commit (2PC)
+
+The two-phase commit protocol is perhaps the most well-known algorithm for implementing distributed transactions. I am only going to give a summary of how they work because [Martin Kleppman gives an excellent explanation of how they work](https://www.youtube.com/watch?v=-_rdWB9hN1c&ab_channel=MartinKleppmann).
+
+There are three types of participants in this protocol: the client requesting the transaction, the controller that organizes the transaction and decides whether to commit the transaction or abort it and the resource managers responsible for handling the changes on the individual resources. In my earlier example, the resource managers could be the payment and the ticket management services; the controller would be a new service, and the client is the web browser client communicating with the controller.
+
+The protocol has one core idea, which is that we can divide the transaction into two phases. The first phase is the prepare phase, where the controller asks the resources managers to prepare for the transaction. Inside a database, this would translate to the participating database nodes locking the tables/rows that the transaction touches. Then, if there are no failures and all resource managers acknowledge the prepare requests, the controller will go ahead and let the resource managers know to commit the transaction. At this point, the resource managers must successfully commit the prepared changes. The protocol requires that the resource managers can commit these changes at this point without any failure.
+
+The durability of the transaction is guaranteed by the controller saving its decision to commit/abort into a write-ahead log, which can be re-processed on a restart after a crash.
+
+The controller is a single point of failure since if it crashes after the prepare messages are sent to the resource managers - but before a decision to abort/commit is made - then the resource managers are not allowed to proceed with any change that would corrupt this transaction until the controller comes back up and tells them whether to commit or abort this last transaction.
+
+#### Fault-tolerant 2PC
+
+Fault-tolerant 2PC ([also explained by Martin Kleppman](https://www.youtube.com/watch?v=-_rdWB9hN1c&ab_channel=MartinKleppmann)) improves on the two-phase commit protocol by using total order broadcast (eg. a Raft replicated log) to disseminate votes about whether to abort/commit the transaction. Here, in case the controller node crashes, the nodes can use heartbeats to detect its failure and take over the role of the controller to make progress.
+
+#### XA transactions
+
+XA transactions are a standard for providing transactions across multiple databases. Many of the databases used today support them (eg. Mysql, Oracle and Postgres).
+
+They work essentially the same way as 2PC does. You can prepare the transaction in each participating database and then decide to commit/abort them all.
+
+[Here are some examples of how XA transactions work](https://betterprogramming.pub/understanding-xa-transactions-with-practical-examples-in-go-67e99fd333db) that show how you might go about working with them in the real world.
+
+#### Choosing an appropriate database
+
+This approach applies if you think you need a distributed transaction because you need to shard your database while you also have to maintain a high level of [consistency](https://jepsen.io/consistency) in your data storage layer. In this case, you could use an out-of-the-box database that supports transactions across shards instead of implementing this yourself. While this is not always an option (eg. for transactions across business domains), if it is, it is often the ideal choice.
+
+Some databases to consider are [CockroachDB](https://www.cockroachlabs.com/) and [Spanner](https://cloud.google.com/spanner), which both provide strong consistency guarantees while scaling to many nodes.
+
+#### Adapting the domain to simplify transactions (single-ownership of data)
+
+A common reason for distributed transactions is having a microservices architecture where the data model is distributed across multiple services. If you have to change data in multiple services as a transaction, you might need to implement that as a distributed transaction. However, you might be able to avoid a distributed transaction by bringing the changed data into a single owner-microservice and have the other services query this owner service when they need this data.
+
+Derek Comartin gives an example of this in his [video](https://www.youtube.com/watch?v=Trl4--FO7Yo&ab_channel=CodeOpinion), where the payment and the order management services jointly own the status of the order. By making the status of an order owned by the payment service, he avoids a distributed transaction across the two services. Now, the transaction is only inside the payment service, and the order service can query the payment service for the order status when necessary.
+
+#### Leases or reservations
+
+Another option for implementing distributed transactions is using [leases](https://martinfowler.com/articles/patterns-of-distributed-systems/time-bound-lease.html), also known as reservations. A lease is similar to the preparation stage of the 2PC protocol, but the acknowledgements of the prepare messages are not valid forever, only until some specific time. This time limit avoids locking the prepared resources forever as if the transaction doesn't complete within the time-bound, the transaction can be aborted.
+
+As often, the devil is in the details. The consistency guarantee this type of transaction provides depends on whether you can reliably share a clock across the participating services. The system might degrade into only providing eventual consistency in edge cases or needing human intervention to restore consistency.
+
+Physical stores with webshops commonly use this pattern. You can reserve an item you want, and they give you a fixed number of days to collect the item before your reservation expires. At the same time, your card is pre-authorized to be charged for the price of the item, but only when the reserved item is collected is your card actually charged. This way, both parts of the transaction are prepared immediately, but they can all expire unless the collection of the item "commits" the transaction.
+
+#### Sagas
+
+Another approach to distributed transactions is using Sagas. The idea here is that you represent the transaction inside your domain model as smaller steps (per-domain transactions) that you can potentially roll back.
+
+For our running example of a ticket booking system, instead of performing a transaction across the ticket reservation system and the payment service, you could implement two sagas (aka stages), one to book the ticket and another to charge the card. Both are individual transactions in their respective systems. If the second step - charing the card - fails, you will "roll back" the first step by cancelling the ticket that you gave the client.
+
+With this approach, you bring the steps of the transaction and their rollback implementation into the business-domain model, and you make the appropriate decisions for the business to handle the failure scenarios.
+
+[Sagas were invented](https://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf) with long-running transactions in mind, with the idea that if each local transaction takes a long time, you don't want to block the whole system for the duration of the multi-step transaction. Instead, you can implement rollback procedures for each step and accept that the partial-result of the transaction is visible to other operations.
+
+## Summary
+
+In summary, distributed transactions are hard to implement correctly, so avoid implementing them yourself if possible. But if you do have to implement them, there are some tried and tested patterns you can use to implement them, each with its corresponding trade-offs.
